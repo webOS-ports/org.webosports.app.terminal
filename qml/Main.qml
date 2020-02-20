@@ -1,20 +1,22 @@
-import QtQuick 2.0
-import QtQuick.Layouts 1.1
+import QtQuick 2.12
+
+import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.4
+
+import LuneOS.Components 1.0
+import LunaNext.Common 0.1
+
 import QMLTermWidget 1.0
-import QtQuick.Controls 1.2
 
 Rectangle {
-    width: 640
-    height: 480
-
-    Action{
-        onTriggered: terminal.copyClipboard();
-        shortcut: "Ctrl+Shift+C"
+    Shortcut {
+        onActivated: terminal.copyClipboard();
+        sequence: "Ctrl+Shift+C"
     }
 
-    Action{
-        onTriggered: terminal.pasteClipboard();
-        shortcut: "Ctrl+Shift+V"
+    Shortcut {
+        onActivated: terminal.pasteClipboard();
+        sequence: "Ctrl+Shift+V"
     }
 
     ColumnLayout {
@@ -24,7 +26,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             font.family: "Monospace"
-            font.pointSize: 7
+            font.pointSize: FontUtils.sizeToPixels("small")
             colorScheme: "cool-retro-term"
 
             session: QMLTermSession{
