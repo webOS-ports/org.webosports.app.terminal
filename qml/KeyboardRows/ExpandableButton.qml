@@ -73,6 +73,7 @@ Rectangle {
                 sourceComponent: Text {
                     color: textColor
                     text: delegateContainer.actionText
+                    font.pixelSize: container.height/2
 
                     Component.onCompleted: {
                         if(textContent.implicitWidth>__maxCellWidth) __maxCellWidth = textContent.implicitWidth;

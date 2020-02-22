@@ -26,6 +26,8 @@ Text {
     property Action mainAction
     width: Math.max(Units.gu(5), implicitWidth)
 
+    font.pixelSize: height/2
+
     anchors.centerIn: parent
     color: "white"
 

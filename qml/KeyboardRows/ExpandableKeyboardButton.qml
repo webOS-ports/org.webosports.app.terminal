@@ -32,6 +32,7 @@ Text {
     color: "orange";
     horizontalAlignment: Text.AlignHCenter
     width: Math.max(Units.gu(5), implicitWidth)
+    font.pixelSize: height/2
 
     Rectangle {
         width: parent.width
