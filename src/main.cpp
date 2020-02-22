@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     QQuickView view;
     
     view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl::fromLocalFile("Main.qml"));
+    view.setSource(QUrl::fromLocalFile("qml/Main.qml"));
     view.show();
 
     return app.exec();
