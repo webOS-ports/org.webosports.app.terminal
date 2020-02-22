@@ -1,0 +1,87 @@
+[
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "G",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "O",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "R",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Y",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "K",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "C",
+            "mod" : "Control"
+        }
+
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "X",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "J",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "W",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "V",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "U",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "T",
+            "mod" : "Control"
+        }
+    }
+]

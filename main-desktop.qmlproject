@@ -3,11 +3,11 @@
 import QmlProject 1.1
 
 Project {
-    mainFile: "main-desktop.qml"
+    mainFile: "desktop/main-desktop.qml"
 
     /* Include .qml, .js, and image files from current directory and subdirectories */
     QmlFiles {
-        directory: [ ".", "../qml" ]
+        directory: "."
     }
     JavaScriptFiles {
         directory: "."
@@ -16,5 +16,5 @@ Project {
         directory: "."
     }
     /* List of plugin directories passed to QML runtime */
-    importPaths: [ ".", "../../luneos-components/modules", "../../luneos-components/test/imports" ]
+    importPaths: [ "desktop", "../luneos-components/modules", "../luneos-components/test/imports" ]
 }

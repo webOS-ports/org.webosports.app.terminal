@@ -1,0 +1,37 @@
+[
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "R",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "C",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "A",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Z",
+            "mod" : "Control"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "D",
+            "mod" : "Control"
+        }
+    }
+]

@@ -1,0 +1,8 @@
+[
+    { "text": "Scroll", "file": "ScrollKeys.json" },
+    { "text": "Cmds", "file": "SimpleCommands.json" },
+    { "text": "Fx", "file": "FunctionKeys.json" },
+    { "text": "Nano", "file": "Nano.json" },
+    { "text": "Ctrl", "file": "ControlKeys.json" }
+]
+

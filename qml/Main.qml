@@ -7,16 +7,17 @@ import LuneOS.Components 1.0
 import LunaNext.Common 0.1
 
 import QMLTermWidget 1.0
+import "KeyboardRows" as Keyboard
 
 Rectangle {
-    Shortcut {
-        onActivated: terminal.copyClipboard();
-        sequence: "Ctrl+Shift+C"
+    Action {
+        onTriggered: terminal.copyClipboard();
+        shortcut: "Ctrl+Shift+C"
     }
 
-    Shortcut {
-        onActivated: terminal.pasteClipboard();
-        sequence: "Ctrl+Shift+V"
+    Action {
+        onTriggered: terminal.pasteClipboard();
+        shortcut: "Ctrl+Shift+V"
     }
 
     ColumnLayout {
@@ -49,7 +50,7 @@ Rectangle {
                 width: 20
                 Rectangle {
                     opacity: 0.4
-                    anchors.margins: 5
+                    anchors.margins: Units.gu(5)
                     radius: width * 0.5
                     anchors.fill: parent
                 }
@@ -68,49 +69,26 @@ Rectangle {
                 }
             }
         }
-        RowLayout {
-            ToolButton {
-                Layout.maximumWidth: height
-                text: "Tab"
-                onClicked: terminal.simulateKeyPress(Qt.Key_Tab, 0, true, 0, "")
-            }
-            ToolButton {
-                Layout.maximumWidth: height
-                text: "←"
-                onClicked: terminal.simulateKeyPress(Qt.Key_Left, 0, true, 0, "")
-            }
-            ToolButton {
-                Layout.maximumWidth: height
-                text: "↑"
-                onClicked: terminal.simulateKeyPress(Qt.Key_Up, 0, true, 0, "")
-            }
-            ToolButton {
-                Layout.maximumWidth: height
-                text: "→"
-                onClicked: terminal.simulateKeyPress(Qt.Key_Right, 0, true, 0, "")
-            }
-            ToolButton {
-                Layout.maximumWidth: height
-                text: "↓"
-                onClicked: terminal.simulateKeyPress(Qt.Key_Down, 0, true, 0, "")
-            }
-            ToolButton {
-                Layout.maximumWidth: height
-                text: "|"
-                onClicked: terminal.simulateKeyPress(Qt.Key_Bar, 0, true, 0, "|")
-            }
-            ToolButton {
-                Layout.maximumWidth: height
-                text: "~"
-                onClicked: terminal.simulateKeyPress(Qt.Key_AsciiTilde, 0, true, 0, "~")
+
+        Loader {
+            id: keyboardBarLoader
+            Layout.fillWidth: true
+            active: true //Qt.inputMethod.visible
+
+            sourceComponent: Keyboard.KeyboardBar {
+                height: Units.gu(5)
+                backgroundColor: "grey"
+                foregroundColor: "orange"
+                onSimulateKey: terminal.simulateKeyPress(key, mod, true, 0, "");
+                onSimulateCommand: mainsession.sendText(command);
             }
         }
+
         Item {
             Layout.minimumHeight: Qt.inputMethod.keyboardRectangle.height
             Layout.fillWidth: true
         }
     }
-
 
     Component.onCompleted: terminal.forceActiveFocus();
 }

@@ -1,0 +1,79 @@
+[
+    {
+        "main_action" : {
+            "type": "key",
+            "id" : "pg_up_key",
+            "key" : "PageUp"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "id" : "pg_dn_key",
+            "key" : "PageDown"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "id" : "del_key",
+            "key" : "Delete"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "id" : "home_key",
+            "key" : "Home"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "id" : "end_key",
+            "key" : "End"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "id" : "tab_key",
+            "key" : "Tab"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "id" : "enter_key",
+            "key" : "Enter"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2191",
+            "key" : "Up"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2193",
+            "key" : "Down"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2190",
+            "key" : "Left"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2192",
+            "key" : "Right"
+        }
+    }
+]
