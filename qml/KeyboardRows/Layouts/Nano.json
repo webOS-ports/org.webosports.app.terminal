@@ -1,0 +1,75 @@
+[
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+G"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+O"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+R"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+Y"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+K"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+C"
+        }
+
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+X"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+J"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+W"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+V"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+U"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+T"
+        }
+    }
+]

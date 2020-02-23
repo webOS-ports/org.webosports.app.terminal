@@ -1,0 +1,7 @@
+module QMLTermWidget
+
+QMLTermWidget 1.0 QMLTermWidget.qml
+QMLTermSession 1.0 QMLTermSession.qml
+QMLTermScrollbar 1.0 QMLTermScrollbar.qml
+
+typeinfo QMLTermWidget.qmltypes

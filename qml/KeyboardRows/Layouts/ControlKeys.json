@@ -1,0 +1,32 @@
+[
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+R"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+C"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+A"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+Z"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Ctrl+D"
+        }
+    }
+]

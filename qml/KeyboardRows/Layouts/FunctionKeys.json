@@ -1,0 +1,80 @@
+[
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Escape"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F1"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F2"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F3"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F4"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F5"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F6"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F7"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F8"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F9"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F10"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F11"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "F12"
+        }
+    }
+]

@@ -29,11 +29,7 @@ ADD_DEFINITIONS( -D HAVE_POSIX_OPENPT)
 ADD_DEFINITIONS( -D HAVE_SYS_TIME_H)
 
 SET(luneos-terminal_SRC
-src/main.cpp
-)
-
-QT5_ADD_RESOURCES(luneos-terminal_SRC
-    qml.qrc
+    src/main.cpp
 )
 
 set(CMAKE_AUTOMOC ON)
@@ -52,4 +48,6 @@ SET(APP_DIR ${WEBOS_INSTALL_WEBOS_APPLICATIONSDIR}/org.webosports.app.terminal)
 
 INSTALL( TARGETS luneos-terminal DESTINATION ${APP_DIR} )
 INSTALL( FILES appinfo.json  DESTINATION ${APP_DIR} )
+INSTALL( FILES icon.png  DESTINATION ${APP_DIR} )
+INSTALL( DIRECTORY qml DESTINATION ${APP_DIR} )
 

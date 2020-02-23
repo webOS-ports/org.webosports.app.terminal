@@ -1,0 +1,72 @@
+[
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "PgUp"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "PgDown"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Delete"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Home"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "End"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Tab"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "key" : "Enter"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2191",
+            "key" : "Up"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2193",
+            "key" : "Down"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2190",
+            "key" : "Left"
+        }
+    },
+    {
+        "main_action" : {
+            "type": "key",
+            "text" : "\u2192",
+            "key" : "Right"
+        }
+    }
+]
