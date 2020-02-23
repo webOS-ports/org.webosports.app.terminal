@@ -2,49 +2,42 @@
     {
         "main_action" : {
             "type": "key",
-            "id" : "pg_up_key",
-            "key" : "PageUp"
+            "key" : "PgUp"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "id" : "pg_dn_key",
-            "key" : "PageDown"
+            "key" : "PgDown"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "id" : "del_key",
             "key" : "Delete"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "id" : "home_key",
             "key" : "Home"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "id" : "end_key",
             "key" : "End"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "id" : "tab_key",
             "key" : "Tab"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "id" : "enter_key",
             "key" : "Enter"
         }
     },

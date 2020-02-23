@@ -2,36 +2,31 @@
     {
         "main_action" : {
             "type": "key",
-            "key" : "R",
-            "mod" : "Control"
+            "key" : "Ctrl+R"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "C",
-            "mod" : "Control"
+            "key" : "Ctrl+C"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "A",
-            "mod" : "Control"
+            "key" : "Ctrl+A"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "Z",
-            "mod" : "Control"
+            "key" : "Ctrl+Z"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "D",
-            "mod" : "Control"
+            "key" : "Ctrl+D"
         }
     }
 ]

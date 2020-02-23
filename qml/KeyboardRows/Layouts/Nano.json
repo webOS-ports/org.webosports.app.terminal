@@ -2,86 +2,74 @@
     {
         "main_action" : {
             "type": "key",
-            "key" : "G",
-            "mod" : "Control"
+            "key" : "Ctrl+G"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "O",
-            "mod" : "Control"
+            "key" : "Ctrl+O"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "R",
-            "mod" : "Control"
+            "key" : "Ctrl+R"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "Y",
-            "mod" : "Control"
+            "key" : "Ctrl+Y"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "K",
-            "mod" : "Control"
+            "key" : "Ctrl+K"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "C",
-            "mod" : "Control"
+            "key" : "Ctrl+C"
         }
 
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "X",
-            "mod" : "Control"
+            "key" : "Ctrl+X"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "J",
-            "mod" : "Control"
+            "key" : "Ctrl+J"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "W",
-            "mod" : "Control"
+            "key" : "Ctrl+W"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "V",
-            "mod" : "Control"
+            "key" : "Ctrl+V"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "U",
-            "mod" : "Control"
+            "key" : "Ctrl+U"
         }
     },
     {
         "main_action" : {
             "type": "key",
-            "key" : "T",
-            "mod" : "Control"
+            "key" : "Ctrl+T"
         }
     }
 ]

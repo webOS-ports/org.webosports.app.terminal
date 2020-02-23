@@ -2,7 +2,6 @@
     {
         "main_action" : {
             "type": "key",
-            "id" : "esc_key",
             "key" : "Escape"
         }
     },

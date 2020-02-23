@@ -27,7 +27,7 @@ Rectangle {
     property JsonListModel layoutModel
 
     // External signals.
-    signal simulateKey(int key, int mod);
+    signal simulateSequence(var sequence, string text);
     signal simulateCommand(string command);
 
     color: "black"
@@ -68,7 +68,20 @@ Rectangle {
             property var actionDetails:  layoutModel.get(index)
             property var mainAction: actionDetails ? actionDetails.main_action : {}
             property var modelActions: actionDetails ? actionDetails.other_actions : {}
-            property Action    modelMainAction: Action {
+            property Action modelMainAction: Action {
+                property string actionType: delegateContainer.mainAction.type
+                text: delegateContainer.mainAction.string || ""
+                shortcut: delegateContainer.mainAction.key || ""
+                onTriggered: {
+                    if(actionType === "key") {
+                        simulateSequence(shortcut, "")
+                        console.log("simulating key: " + shortcut);
+                    }
+                    else if(actionType === "string") {
+                        simulateCommand(text);
+                        console.log("simulating text: " + text);
+                    }
+                }
             }
             Component {
                 id: nonExpandable
@@ -89,7 +102,7 @@ Rectangle {
                         text: model.string || ""
                         shortcut: model.key || ""
                         onTriggered: {
-                            if(actionType === "key") simulateKey(shortcut)
+                            if(actionType === "key") simulateSequence(shortcut, "")
                             else if(actionType === "string") simulateCommand(text);
                             console.log("action " + text + " has been triggered");
                         }

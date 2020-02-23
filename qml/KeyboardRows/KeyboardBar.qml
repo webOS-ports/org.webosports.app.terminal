@@ -30,7 +30,7 @@ Item {
     property color foregroundColor: "white"
 
     signal simulateCommand(string command);
-    signal simulateKey(int key, int mod);
+    signal simulateSequence(var sequence, string text);
 
     JsonListModel {
         id: layoutsList
@@ -92,6 +92,6 @@ Item {
         textColor: rootItem.foregroundColor
 
         onSimulateCommand: rootItem.simulateCommand(command);
-        onSimulateKey: rootItem.onSimulateKey(key, mod);
+        onSimulateSequence: rootItem.simulateSequence(sequence, text);
     }
 }

@@ -79,7 +79,7 @@ Rectangle {
                 height: Units.gu(5)
                 backgroundColor: "grey"
                 foregroundColor: "orange"
-                onSimulateKey: terminal.simulateKeyPress(key, mod, true, 0, "");
+                onSimulateSequence: terminal.simulateKeySequence(sequence);
                 onSimulateCommand: mainsession.sendText(command);
             }
         }
