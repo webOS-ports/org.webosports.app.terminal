@@ -33,6 +33,7 @@ Text {
     horizontalAlignment: Text.AlignHCenter
     width: Math.max(Units.gu(5), implicitWidth)
     font.pixelSize: height/2
+    verticalAlignment: Text.AlignVCenter
 
     Rectangle {
         width: parent.width
