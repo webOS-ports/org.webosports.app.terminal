@@ -3,6 +3,8 @@
 
 int main(int argc, char **argv)
 {
+    setenv("HOME", "/home/root", 0);
+
     QApplication app(argc, argv);
 
     QQuickView view;
