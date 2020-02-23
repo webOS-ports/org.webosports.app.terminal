@@ -22,6 +22,8 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
+        spacing: 0
+
         QMLTermWidget {
             id: terminal
             Layout.fillWidth: true
@@ -75,9 +77,9 @@ Rectangle {
             id: keyboardBarLoader
             Layout.fillWidth: true
             active: true //Qt.inputMethod.visible
+            Layout.preferredHeight: Units.gu(6)
 
             sourceComponent: Keyboard.KeyboardBar {
-                height: Units.gu(5)
                 backgroundColor: "grey"
                 foregroundColor: "orange"
                 onSimulateSequence: terminal.simulateKeySequence(sequence);
