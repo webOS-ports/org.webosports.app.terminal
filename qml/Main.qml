@@ -29,6 +29,7 @@ Rectangle {
             font.family: "Monospace"
             font.pointSize: FontUtils.sizeToPixels("small")
             colorScheme: "cool-retro-term"
+            focus: true
 
             session: QMLTermSession{
                 id: mainsession
