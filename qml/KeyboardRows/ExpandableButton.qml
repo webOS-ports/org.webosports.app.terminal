@@ -22,7 +22,7 @@ import QtQml.Models 2.1
 import LuneOS.Components 1.0
 import LunaNext.Common 0.1
 
-Rectangle {
+Item {
     id: container
 
     property alias actionsModel: actionInstantiator.model
@@ -33,8 +33,6 @@ Rectangle {
     property bool expandRight: true
 
     property real animationTime: 200
-    property color textColor: "white"
-    property color backgroundColor: "black"
 
     property bool expandable: true
 
@@ -48,8 +46,6 @@ Rectangle {
 
     property real __maxCellWidth: Math.max(container.width, Units.gu(9))
 
-    color: backgroundColor
-
     Instantiator {
         id: actionInstantiator
     }
@@ -62,21 +58,22 @@ Rectangle {
             property string actionText: model.text || ""
             property string actionIcon: model.icon || ""
 
-            color: container.backgroundColor;
+            radius: 5
+            color: "grey"
             width: __maxCellWidth
             height: container.height
 
             Loader {
                 id: textContent
-                anchors.centerIn: parent
                 active: delegateContainer.actionText
-                sourceComponent: Text {
-                    color: textColor
+                sourceComponent: Button {
+                    id: textButton
+                    down: index == selectedIndex
                     text: delegateContainer.actionText
-                    font.pixelSize: container.height/2
+                    height: container.height
 
                     Component.onCompleted: {
-                        if(textContent.implicitWidth>__maxCellWidth) __maxCellWidth = textContent.implicitWidth;
+                        if(textButton.implicitWidth>__maxCellWidth) __maxCellWidth = textButton.implicitWidth;
                     }
                 }
             }
@@ -87,16 +84,6 @@ Rectangle {
                 active: delegateContainer.actionIcon
                 sourceComponent: Image {
                     source: delegateContainer.actionIcon
-                }
-            }
-
-            Rectangle {
-                color: "orange";
-                anchors.fill: parent
-                opacity: index == selectedIndex ? 0.5 : 0.0
-
-                Behavior on opacity {
-                    NumberAnimation { duration: 100 }
                 }
             }
         }

@@ -20,20 +20,11 @@ import QtQuick.Controls 2.4
 
 import LunaNext.Common 0.1
 
-Text {
+Button {
     id: mainLabel
 
     property Action mainAction
     width: Math.max(Units.gu(5), implicitWidth)
 
-    font.pixelSize: height/2
-    verticalAlignment: Text.AlignVCenter
-
-    anchors.centerIn: parent
-    color: "white"
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: mainAction.triggered();
-    }
+    onClicked: mainAction.triggered();
 }

@@ -17,36 +17,26 @@
  */
 import QtQuick 2.12
 import QtQuick.Controls 2.4
+import QtQuick.Controls.LuneOS 2.0
 
 import LuneOS.Components 1.0
 import LunaNext.Common 0.1
 
-Text {
+Button {
     id: expandableKeyboardButton
     property alias mainAction: expandableButton.mainAction
     property alias actionsModel: expandableButton.actionsModel
     property alias actionsDelegate: expandableButton.actionsDelegate
     property alias expandable: expandableButton.expandable
     property alias expandRight: expandableButton.expandRight
-    property color backgroundColor
-    color: "orange";
-    horizontalAlignment: Text.AlignHCenter
-    width: Math.max(Units.gu(5), implicitWidth)
-    font.pixelSize: height/2
-    verticalAlignment: Text.AlignVCenter
 
-    Rectangle {
-        width: parent.width
-        anchors.top: parent.top
-        height: Units.dp(3)
-        color: "blue";
-    }
+    width: Math.max(Units.gu(5), implicitWidth)
+
+    LuneOSButton.mainColor: LuneOSButton.blueColor
 
     ExpandableButton {
         id: expandableButton
         anchors.fill: parent
-        backgroundColor: expandableKeyboardButton.backgroundColor
-        textColor: expandableKeyboardButton.color
 
         z: parent.z - 0.01
     }

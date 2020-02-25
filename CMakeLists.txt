@@ -41,6 +41,7 @@ TARGET_LINK_LIBRARIES( luneos-terminal
     Qt5::Gui
     Qt5::Widgets
     Qt5::Quick
+    Qt5::QuickControls2
     ${CMAKE_THREAD_LIBS_INIT}
 )
 

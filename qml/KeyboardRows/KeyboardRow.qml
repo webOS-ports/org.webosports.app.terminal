@@ -25,14 +25,13 @@ Rectangle {
     id: container
 
     property JsonListModel layoutModel
+    property alias spacing: shortcutsListView.spacing
 
     // External signals.
     signal simulateSequence(var sequence, string text);
     signal simulateCommand(string command);
 
     color: "black"
-    property color textColor
-
 
     ListView {
         id: shortcutsListView
@@ -43,14 +42,14 @@ Rectangle {
         delegate: keyDelegate
         snapMode: ListView.SnapToItem
 
-        spacing: Units.gu(0.5)
+        //spacing: Units.gu(0.5)
     }
 
     Rectangle {
         id: scrollBar
         anchors.bottom: parent.bottom
         height: Units.dp(2)
-        // FIXME
+
         color: "orange";
 
         width: shortcutsListView.visibleArea.widthRatio * shortcutsListView.width
@@ -75,11 +74,9 @@ Rectangle {
                 onTriggered: {
                     if(actionType === "key") {
                         simulateSequence(shortcut, "")
-                        console.log("simulating key: " + shortcut);
                     }
                     else if(actionType === "string") {
                         simulateCommand(text);
-                        console.log("simulating text: " + text);
                     }
                 }
             }
@@ -88,7 +85,6 @@ Rectangle {
                 KeyboardButton {
                     text: delegateContainer.mainAction.text || delegateContainer.mainAction.key || ""
                     mainAction: delegateContainer.modelMainAction
-                    color: container.textColor
                 }
             }
             Component {
@@ -104,13 +100,10 @@ Rectangle {
                         onTriggered: {
                             if(actionType === "key") simulateSequence(shortcut, "")
                             else if(actionType === "string") simulateCommand(text);
-                            console.log("action " + text + " has been triggered");
                         }
                     }
                     expandable: !ListView.movingHorizontally
                     expandRight: true
-                    backgroundColor: container.color
-                    color: container.textColor
                 }
             }
         }

@@ -22,12 +22,13 @@ import QtQml.Models 2.1
 import LuneOS.Components 1.0
 import LunaNext.Common 0.1
 
-Item {
+Rectangle {
     id: rootItem
 
     property int selectedLayoutIndex: 0
-    property color backgroundColor: "black"
-    property color foregroundColor: "white"
+    property real spacing: 0
+
+    color: "black"
 
     signal simulateCommand(string command);
     signal simulateSequence(var sequence, string text);
@@ -43,15 +44,28 @@ Item {
         }
     }
 
-    ExpandableButton {
+    KeyboardRow {
+        id: keyboardContainer
+        anchors.left: keyboardSelector.right
+        anchors.leftMargin: keyboardContainer.spacing
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.top: parent.top
+
+        spacing: rootItem.spacing
+
+        layoutModel: JsonListModel {
+            id: keybordLayoutModel
+        }
+
+        onSimulateCommand: rootItem.simulateCommand(command);
+        onSimulateSequence: rootItem.simulateSequence(sequence, text);
+    }
+
+    ExpandableKeyboardButton {
         id: keyboardSelector
         height: parent.height
-        width: Units.gu(4)
-
-        z: parent.z + 0.01
-
-        backgroundColor: rootItem.backgroundColor
-        textColor: rootItem.foregroundColor
+        width: Units.gu(5)
 
         actionsModel: layoutsList
         actionsDelegate: Action {
@@ -65,33 +79,8 @@ Item {
 
         enabled: layoutsList.count != 0
 
-        Image {
-            anchors {
-                fill: parent
-                leftMargin: Units.gu(0.5)
-                rightMargin: Units.gu(0.5)
-                topMargin: Units.gu(1)
-                bottomMargin: Units.gu(1)
-            }
-            source: Qt.resolvedUrl("../images/drawer.png")
-        }
-    }
-
-    KeyboardRow {
-        id: keyboardContainer
-        anchors.left: keyboardSelector.right
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.top: parent.top
-
-        layoutModel: JsonListModel {
-            id: keybordLayoutModel
-        }
-
-        color: rootItem.backgroundColor
-        textColor: rootItem.foregroundColor
-
-        onSimulateCommand: rootItem.simulateCommand(command);
-        onSimulateSequence: rootItem.simulateSequence(sequence, text);
+        display: Button.IconOnly
+        padding: 0
+        icon.source: Qt.resolvedUrl("../images/drawer.png")
     }
 }

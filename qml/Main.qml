@@ -29,7 +29,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             font.family: "Monospace"
-            font.pointSize: FontUtils.sizeToPixels("small")
+            font.pointSize: FontUtils.sizeToPixels("xx-small")
             colorScheme: "cool-retro-term"
             focus: true
 
@@ -80,8 +80,6 @@ Rectangle {
             Layout.preferredHeight: Units.gu(6)
 
             sourceComponent: Keyboard.KeyboardBar {
-                backgroundColor: "grey"
-                foregroundColor: "orange"
                 onSimulateSequence: terminal.simulateKeySequence(sequence);
                 onSimulateCommand: mainsession.sendText(command);
             }

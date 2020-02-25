@@ -1,12 +1,13 @@
 #include <QtWidgets/QApplication>
 #include <QtQuick/QQuickView>
+#include <QtQuickControls2/QQuickStyle>
 
 int main(int argc, char **argv)
 {
     setenv("HOME", "/home/root", 0);
 
     QApplication app(argc, argv);
-
+    QQuickStyle::setStyle("LuneOS");
     QQuickView view;
     
     view.setResizeMode(QQuickView::SizeRootObjectToView);
