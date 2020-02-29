@@ -24,53 +24,11 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
 
-        QMLTermWidget {
+        Terminal {
             id: terminal
-            Layout.fillWidth: true
             Layout.fillHeight: true
-            font.family: "Monospace"
-            font.pointSize: FontUtils.sizeToPixels("xx-small")
-            colorScheme: "cool-retro-term"
+            Layout.fillWidth: true
             focus: true
-
-            session: QMLTermSession{
-                id: mainsession
-                initialWorkingDirectory: "$HOME"
-                onMatchFound: {
-                    console.log("found at: %1 %2 %3 %4".arg(startColumn).arg(startLine).arg(endColumn).arg(endLine));
-                }
-                onNoMatchFound: {
-                    console.log("not found");
-                }
-            }
-
-            onTerminalUsesMouseChanged: console.log(terminalUsesMouse);
-            onTerminalSizeChanged: console.log(terminalSize);
-            Component.onCompleted: mainsession.startShellProgram();
-
-            QMLTermScrollbar {
-                terminal: terminal
-                width: 20
-                Rectangle {
-                    opacity: 0.4
-                    anchors.margins: Units.gu(5)
-                    radius: width * 0.5
-                    anchors.fill: parent
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                property real oldY
-                onPressed: oldY = mouse.y
-                onPositionChanged: {
-                    terminal.simulateWheel(0, 0, 0, 0, Qt.point(0, (mouse.y - oldY)*2))
-                    oldY = mouse.y
-                }
-                onClicked: {
-                    Qt.inputMethod.show();
-                }
-            }
         }
 
         Loader {
@@ -81,7 +39,7 @@ Rectangle {
 
             sourceComponent: Keyboard.KeyboardBar {
                 onSimulateSequence: terminal.simulateKeySequence(sequence);
-                onSimulateCommand: mainsession.sendText(command);
+                onSimulateCommand: terminal.sendText(command);
             }
         }
 

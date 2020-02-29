@@ -1,5 +1,7 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QMLTermWidget 1.0
+
+import LunaNext.Common 0.1
 
 Item {
     property QMLTermWidget terminal
@@ -10,9 +12,7 @@ Item {
     property int lines: terminal.lines
     property int totalLines: lines + maximum
 
-    anchors.right: terminal.right
-
-    opacity: 0.0
+    opacity: 1.0
 
     height: terminal.height * (lines / (totalLines - minimum))
     y: (terminal.height / (totalLines)) * (value - minimum)
