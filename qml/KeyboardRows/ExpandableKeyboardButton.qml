@@ -31,6 +31,7 @@ Button {
     property alias expandRight: expandableButton.expandRight
 
     width: Math.max(Units.gu(5), implicitWidth)
+    focusPolicy: Qt.NoFocus
 
     LuneOSButton.mainColor: LuneOSButton.blueColor
 

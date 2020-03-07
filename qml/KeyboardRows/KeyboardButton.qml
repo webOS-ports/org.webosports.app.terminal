@@ -25,6 +25,7 @@ Button {
 
     property Action mainAction
     width: Math.max(Units.gu(5), implicitWidth)
+    focusPolicy: Qt.NoFocus
 
     onClicked: mainAction.triggered();
 }

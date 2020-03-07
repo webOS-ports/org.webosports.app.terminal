@@ -71,6 +71,7 @@ Item {
                     down: index == selectedIndex
                     text: delegateContainer.actionText
                     height: container.height
+                    focusPolicy: Qt.NoFocus
 
                     Component.onCompleted: {
                         if(textButton.implicitWidth>__maxCellWidth) __maxCellWidth = textButton.implicitWidth;
