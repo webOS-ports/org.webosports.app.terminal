@@ -10,31 +10,32 @@ import QMLTermWidget 1.0
 import "KeyboardRows" as Keyboard
 
 QMLTermWidget {
-    signal sendText(string text)
-
     id: terminal
     font.family: "Monospace"
     font.pointSize: FontUtils.sizeToPixels("xx-small")
     colorScheme: "cool-retro-term"
+    focus: true
     session: QMLTermSession{
         id: mainsession
         initialWorkingDirectory: "$HOME"
-        onMatchFound: {
-            console.log("found at: %1 %2 %3 %4".arg(startColumn).arg(startLine).arg(endColumn).arg(endLine));
-        }
-        onNoMatchFound: {
-            console.log("not found");
-        }
+        onFinished: terminal.close()
     }
     
+    function sendText(text) {
+        mainsession.sendText(text);
+    }
+
     function close() {
         Qt.quit()
     }
 
     onTerminalUsesMouseChanged: console.log(terminalUsesMouse);
     onTerminalSizeChanged: console.log(terminalSize);
-    onSendText: mainsession.sendText(text)
-    Component.onCompleted: mainsession.startShellProgram();
+    Component.onCompleted: {
+        mainsession.startShellProgram();
+        terminal.forceActiveFocus();
+        Qt.inputMethod.show();
+    }
 
     TerminalInputArea {
         id: inputArea
@@ -48,19 +49,16 @@ QMLTermWidget {
         // This is needed to fake a "flickable" scrolling.
         swipeDelta: terminal.fontMetrics.height
 
-        // Mouse actions
-        onMouseMoveDetected: terminal.simulateMouseMove(x, y, button, buttons, modifiers);
-        onDoubleClickDetected: terminal.simulateMouseDoubleClick(x, y, button, buttons, modifiers);
-        onMousePressDetected: {
-            terminal.forceActiveFocus();
-            terminal.simulateMousePress(x, y, button, buttons, modifiers);
-        }
-        onMouseReleaseDetected: terminal.simulateMouseRelease(x, y, button, buttons, modifiers);
-        onMouseWheelDetected: terminal.simulateWheel(x, y, buttons, modifiers, angleDelta);
-
         // Touch actions
-        onTouchPress: terminal.forceActiveFocus()
-        onTouchClick: terminal.simulateKeyPress(Qt.Key_Tab, Qt.NoModifier, true, 0, "");
+        onTouchPress: {
+            terminal.forceActiveFocus(0);
+            terminal.simulateMousePress(x, y, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier);
+        }
+        onTouchClick: {
+            terminal.forceActiveFocus(0);
+            if(!Qt.inputMethod.visible) Qt.inputMethod.show();
+        //    terminal.simulateKeyPress(Qt.Key_Tab, Qt.NoModifier, true, 0, "");
+        }
         onTouchPressAndHold: alternateAction(x, y);
 
         // Swipe actions
