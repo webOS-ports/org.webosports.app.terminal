@@ -10,6 +10,8 @@ import QMLTermWidget 1.0
 import "KeyboardRows" as Keyboard
 
 Rectangle {
+    id: root
+
     Action {
         onTriggered: terminal.copyClipboard();
         shortcut: "Ctrl+Shift+C"
@@ -20,34 +22,32 @@ Rectangle {
         shortcut: "Ctrl+Shift+V"
     }
 
-    ColumnLayout {
-        anchors.fill: parent
+    Column {
+        width: parent.width
         spacing: 0
 
         Terminal {
             id: terminal
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            focus: true
+            width: parent.width
+            height: root.height - keyboardBarLoader.height - keyboardHeight
+
+            property real keyboardHeight: Qt.inputMethod.visible ? Qt.inputMethod.keyboardRectangle.height : 0
         }
 
         Loader {
             id: keyboardBarLoader
-            Layout.fillWidth: true
+            width: parent.width
             active: true //Qt.inputMethod.visible
-            Layout.preferredHeight: Units.gu(6)
+            height: Units.gu(5)
 
             sourceComponent: Keyboard.KeyboardBar {
                 onSimulateSequence: terminal.simulateKeySequence(sequence);
                 onSimulateCommand: terminal.sendText(command);
             }
         }
-
-        Item {
-            Layout.minimumHeight: Qt.inputMethod.keyboardRectangle.height
-            Layout.fillWidth: true
-        }
     }
 
-    Component.onCompleted: terminal.forceActiveFocus();
+    Component.onCompleted: {
+        terminal.forceActiveFocus();
+    }
 }
