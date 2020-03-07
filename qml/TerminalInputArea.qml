@@ -21,13 +21,6 @@ Item{
     property bool touchAreaPressed: false
     property real swipeDelta: units.gu(1)
 
-    // Mouse signals
-    signal mouseMoveDetected(int x, int y, int button, int buttons, int modifiers);
-    signal doubleClickDetected(int x, int y, int button, int buttons, int modifiers);
-    signal mousePressDetected(int x, int y, int button, int buttons, int modifiers);
-    signal mouseReleaseDetected(int x, int y, int button, int buttons, int modifiers);
-    signal mouseWheelDetected(int x, int y, int buttons, int modifiers, point angleDelta);
-
     // Touch signals
     signal touchPressAndHold(int x, int y);
     signal touchClick(int x, int y);
@@ -80,7 +73,7 @@ Item{
             id: pressAndHoldTimer
             running: false
             onTriggered: {
-                if (!parent.__moved)
+                if (!singleTouchTouchArea.__moved)
                     touchPressAndHold(singleTouchTouchArea.__pressPosition.x,
                                       singleTouchTouchArea.__pressPosition.y);
             }
@@ -191,36 +184,5 @@ Item{
         }
 
         mouseEnabled: false
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        enabled: !parent.touchAreaPressed
-        acceptedButtons: Qt.AllButtons
-        cursorShape: Qt.IBeamCursor
-
-        z: parent.z
-
-        onDoubleClicked: {
-            doubleClickDetected(mouse.x, mouse.y, mouse.button, mouse.buttons, mouse.modifiers);
-        }
-        onPositionChanged: {
-            mouseMoveDetected(mouse.x, mouse.y, mouse.button, mouse.buttons, mouse.modifiers);
-        }
-        onPressed: {
-            // Do not handle the right click if the terminal needs them.
-            if (mouse.button === Qt.RightButton && !terminal.terminalUsesMouse) {
-                alternateAction(mouse.x, mouse.y);
-            } else {
-                mousePressDetected(mouse.x, mouse.y, mouse.button, mouse.buttons, mouse.modifiers);
-            }
-        }
-        onReleased: {
-            mouseReleaseDetected(mouse.x, mouse.y, mouse.button, mouse.buttons, mouse.modifiers);
-        }
-        onWheel: {
-            mouseWheelDetected(wheel.x, wheel.y, wheel.buttons, wheel.modifiers, wheel.angleDelta);
-        }
     }
 }
