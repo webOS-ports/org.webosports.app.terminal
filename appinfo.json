@@ -1,10 +1,10 @@
 {
-    "id": "qmlterm",
+    "id": "org.webosports.app.terminal",
     "title": "QML Term",
     "version": "0.1",
     "main": "luneos-terminal",
     "params": "",
-    "type": "qt",
+    "type": "native",
     "uiRevision": 2,
     "vendorurl": "https://github.com/Tofee/org.webosports.app.terminal",
     "icon": "icon.png"
