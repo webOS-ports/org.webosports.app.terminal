@@ -1,5 +1,4 @@
-import QtQuick 2.0
-import QMLTermWidget 1.0
+import QtQuick
 
 import "../qml"
 

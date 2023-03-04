@@ -1,5 +1,4 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
-ADD_DEFINITIONS("-std=c++11")
 
 PROJECT(org.webosports.app.terminal)
 
@@ -7,18 +6,18 @@ include(webOS/webOS)
 webos_modules_init(1 0 0 QUALIFIER RC3)
 webos_component(0 5 0)
 
-SET(QT_MIN_VERSION  "5.7.0")
+SET(QT_MIN_VERSION  "6.3.0")
 set(CMAKE_BUILD_TYPE DEBUG)
 
 IF(POLICY CMP0063)
     CMAKE_POLICY(SET CMP0063 NEW)
 ENDIF(POLICY CMP0063)
 
-INCLUDE_DIRECTORIES(SYSTEM ${Qt5Core_INCLUDES})
+INCLUDE_DIRECTORIES(SYSTEM ${Qt6Core_INCLUDES})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib/)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/)
 
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Core
     Widgets
     Quick
@@ -37,11 +36,11 @@ set(CMAKE_AUTOMOC ON)
 ADD_EXECUTABLE( luneos-terminal ${luneos-terminal_SRC} )
 
 TARGET_LINK_LIBRARIES( luneos-terminal
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::Quick
-    Qt5::QuickControls2
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+    Qt6::Quick
+    Qt6::QuickControls2
     ${CMAKE_THREAD_LIBS_INIT}
 )
 
