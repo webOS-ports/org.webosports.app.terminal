@@ -6,11 +6,17 @@ import QtQuick.Controls 2.4
 import LuneOS.Components 1.0
 import LunaNext.Common 0.1
 
+import Eos.Window 0.1
+
 import QMLTermWidget 1.0
 import "KeyboardRows" as Keyboard
 
-Rectangle {
+WebOSWindow {
     id: root
+
+    width: Settings.displayWidth
+    height: Settings.displayHeight
+    visible: true
 
     Action {
         onTriggered: terminal.copyClipboard();
