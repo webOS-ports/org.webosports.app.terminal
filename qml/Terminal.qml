@@ -12,7 +12,7 @@ import "KeyboardRows" as Keyboard
 QMLTermWidget {
     id: terminal
     font.family: "Monospace"
-    font.pointSize: FontUtils.sizeToPixels("xx-small")
+    font.pointSize: FontUtils.sizeToPixels("medium")
     colorScheme: "cool-retro-term"
     focus: true
     session: QMLTermSession{
