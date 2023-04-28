@@ -22,7 +22,7 @@ import QtQuick.Controls.LuneOS 2.0
 import LuneOS.Components 1.0
 import LunaNext.Common 0.1
 
-Button {
+Item {
     id: expandableKeyboardButton
     property alias mainAction: expandableButton.mainAction
     property alias actionsModel: expandableButton.actionsModel
@@ -30,15 +30,28 @@ Button {
     property alias expandable: expandableButton.expandable
     property alias expandRight: expandableButton.expandRight
 
-    width: Math.max(Units.gu(5), implicitWidth)
-    focusPolicy: Qt.NoFocus
+    property alias iconSource: innerButton.icon.source
+    property alias text: innerButton.text
 
-    LuneOSButton.mainColor: LuneOSButton.blueColor
+    width: Math.max(Units.gu(5), implicitWidth)
 
     ExpandableButton {
         id: expandableButton
         anchors.fill: parent
 
-        z: parent.z - 0.01
+        // use an inactive button for display
+        Button {
+            id: innerButton
+            enabled: false
+            down: expandableButton.areaPressed
+            anchors.fill: parent
+            display: text === "" ? AbstractButton.IconOnly : AbstractButton.TextOnly
+            LuneOSButton.mainColor: LuneOSButton.blueColor
+
+            Component.onCompleted: {
+                // don't grey out the button just because it is disabled
+                background.opacity = 1;
+            }
+        }
     }
 }

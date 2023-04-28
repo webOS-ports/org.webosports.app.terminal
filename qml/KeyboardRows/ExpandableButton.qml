@@ -43,6 +43,7 @@ Item {
     property int selectedIndex: -1
     property bool expanded: __expanded && expandable
     property bool __expanded: mainMouseArea.pressed && !clickTimer.running
+    property bool areaPressed: mainMouseArea.pressed
 
     property real __maxCellWidth: Math.max(container.width, Units.gu(9))
 
@@ -100,6 +101,7 @@ Item {
 
         anchors.fill: expanded ? popupGridView : container
         enabled: expandable
+        preventStealing: true
 
         onPressed: {
             if (mainAction)

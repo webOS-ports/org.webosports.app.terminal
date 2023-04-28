@@ -79,8 +79,6 @@ Rectangle {
 
         enabled: layoutsList.count != 0
 
-        display: Button.IconOnly
-        padding: 0
-        icon.source: Qt.resolvedUrl("../images/drawer.png")
+        iconSource: Qt.resolvedUrl("../images/drawer.png")
     }
 }
