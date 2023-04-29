@@ -69,6 +69,7 @@ Rectangle {
             property var modelActions: actionDetails ? actionDetails.other_actions : {}
             property Action modelMainAction: Action {
                 property string actionType: delegateContainer.mainAction.type
+                enable: false
                 text: delegateContainer.mainAction.string || ""
                 shortcut: delegateContainer.mainAction.key || ""
                 onTriggered: {
@@ -95,6 +96,7 @@ Rectangle {
                     actionsModel: delegateContainer.modelActions
                     actionsDelegate: Action {
                         property string actionType: model.type
+                        enable: false
                         text: model.string || ""
                         shortcut: model.key || ""
                         onTriggered: {

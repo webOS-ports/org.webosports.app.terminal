@@ -58,8 +58,8 @@ Rectangle {
             id: keybordLayoutModel
         }
 
-        onSimulateCommand: rootItem.simulateCommand(command);
-        onSimulateSequence: rootItem.simulateSequence(sequence, text);
+        onSimulateCommand: (command) => { rootItem.simulateCommand(command); }
+        onSimulateSequence: (sequence, text) => { rootItem.simulateSequence(sequence, text); }
     }
 
     ExpandableKeyboardButton {
@@ -70,6 +70,7 @@ Rectangle {
         actionsModel: layoutsList
         actionsDelegate: Action {
             property string filePath: model.file
+            enabled: false
             text: model.text
             onTriggered: {
                 console.log("Loading layout Layouts/" + filePath + "...");
