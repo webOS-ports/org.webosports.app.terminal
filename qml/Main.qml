@@ -9,8 +9,18 @@ import "KeyboardRows" as Keyboard
 WebOSWindow {
     id: appWindow
 
-    // The card is not resized for the virtual keyboard, so make room for it
-    readonly property real keyboardHeight: Qt.inputMethod.visible ? Qt.inputMethod.keyboardRectangle.height : 0
+    // The card is not resized for the virtual keyboard, so make room for it:
+    // as much of the window as the keyboard covers, from its top edge down. Not
+    // its height, because the keyboard reaches past the card's bottom edge into
+    // the shell's area below it - on the Q25 the bar ended up 64 px above the
+    // keys. The rectangle arrives in the coordinates of the keyboard's surface,
+    // which on LuneOS starts where the card does, under the status bar.
+    readonly property real keyboardHeight: {
+        const rect = Qt.inputMethod.keyboardRectangle;
+        if (!Qt.inputMethod.visible || rect.height <= 0)
+            return 0;
+        return Math.max(0, Math.min(height, height - rect.y));
+    }
 
     // luna-next-cardshell rounds the card's corners with a 20 px radius
     // (CardWindowWrapper.cornerRadius), which cut into a character drawn in
