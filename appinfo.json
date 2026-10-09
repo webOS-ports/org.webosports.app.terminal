@@ -1,11 +1,12 @@
 {
     "id": "org.webosports.app.terminal",
-    "title": "QML Term",
+    "title": "Terminal",
     "version": "0.1",
+    "vendor": "webOS Ports",
     "main": "luneos-terminal",
     "params": "",
     "type": "native",
     "uiRevision": 2,
-    "vendorurl": "https://github.com/Tofee/org.webosports.app.terminal",
+    "vendorurl": "https://github.com/webOS-ports/org.webosports.app.terminal",
     "icon": "icon.png"
 }

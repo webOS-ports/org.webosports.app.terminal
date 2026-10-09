@@ -1,53 +1,36 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+cmake_minimum_required(VERSION 3.16)
 
-PROJECT(org.webosports.app.terminal)
+project(org.webosports.app.terminal LANGUAGES CXX)
 
 include(webOS/webOS)
 webos_modules_init(1 0 0 QUALIFIER RC3)
 webos_component(0 5 0)
 
-SET(QT_MIN_VERSION  "6.3.0")
-set(CMAKE_BUILD_TYPE DEBUG)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-IF(POLICY CMP0063)
-    CMAKE_POLICY(SET CMP0063 NEW)
-ENDIF(POLICY CMP0063)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets Qml Quick QuickControls2)
 
-INCLUDE_DIRECTORIES(SYSTEM ${Qt6Core_INCLUDES})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib/)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/)
+add_executable(luneos-terminal src/main.cpp)
 
-find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
-    Core
-    Widgets
-    Quick
-    QuickControls2
+target_compile_options(luneos-terminal PRIVATE -Wall -Wextra)
+target_compile_definitions(luneos-terminal PRIVATE
+    QT_NO_CAST_FROM_ASCII
+    QT_NO_CAST_TO_ASCII
+    QT_DISABLE_DEPRECATED_UP_TO=0x060500
 )
 
-ADD_DEFINITIONS( -D HAVE_POSIX_OPENPT)
-ADD_DEFINITIONS( -D HAVE_SYS_TIME_H)
-
-SET(luneos-terminal_SRC
-    src/main.cpp
-)
-
-set(CMAKE_AUTOMOC ON)
-
-ADD_EXECUTABLE( luneos-terminal ${luneos-terminal_SRC} )
-
-TARGET_LINK_LIBRARIES( luneos-terminal
+target_link_libraries(luneos-terminal PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
+    Qt6::Qml
     Qt6::Quick
     Qt6::QuickControls2
-    ${CMAKE_THREAD_LIBS_INIT}
 )
 
-SET(APP_DIR ${WEBOS_INSTALL_WEBOS_APPLICATIONSDIR}/org.webosports.app.terminal)
+set(APP_DIR ${WEBOS_INSTALL_WEBOS_APPLICATIONSDIR}/org.webosports.app.terminal)
 
-INSTALL( TARGETS luneos-terminal DESTINATION ${APP_DIR} )
-INSTALL( FILES appinfo.json  DESTINATION ${APP_DIR} )
-INSTALL( FILES icon.png  DESTINATION ${APP_DIR} )
-INSTALL( DIRECTORY qml DESTINATION ${APP_DIR} )
-
+install(TARGETS luneos-terminal DESTINATION ${APP_DIR})
+install(FILES appinfo.json icon.png DESTINATION ${APP_DIR})
+install(DIRECTORY qml DESTINATION ${APP_DIR})

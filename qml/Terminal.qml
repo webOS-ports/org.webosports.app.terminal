@@ -1,138 +1,117 @@
-import QtQuick 2.12
+import QtQuick
+import QtQuick.Controls
 
-import QtQuick.Layouts 1.3
-import QtQuick.Controls 2.4
-
-import LuneOS.Components 1.0
 import LunaNext.Common 0.1
 
-import QMLTermWidget 1.0
-import "KeyboardRows" as Keyboard
+import QMLTermWidget 2.0
 
 QMLTermWidget {
     id: terminal
-    font.family: "Monospace"
-    font.pointSize: FontUtils.sizeToPixels("medium")
+
+    // One wheel step of the terminal: 5 degrees, in eighths of a degree,
+    // which scrolls the history by a line
+    readonly property int wheelStep: 40
+
+    function sendText(text) {
+        session.sendText(text);
+    }
+
+    function pressKey(key, modifiers) {
+        simulateKeyPress(key, modifiers, true, 0, "");
+    }
+
+    function pressKeyRepeatedly(key, times) {
+        for (let i = 0; i < times; ++i)
+            pressKey(key, Qt.NoModifier);
+    }
+
+    function scrollHistory(steps) {
+        const delta = steps > 0 ? wheelStep : -wheelStep;
+
+        for (let i = 0; i < Math.abs(steps); ++i)
+            simulateWheel(width / 2, height / 2, Qt.NoButton, Qt.NoModifier, Qt.point(0, delta));
+    }
+
+    // Whole, so the widget's default point size does not linger next to
+    // the pixel size
+    font: Qt.font({ "family": "Liberation Mono", "pixelSize": FontUtils.sizeToPixels("medium") })
     colorScheme: "cool-retro-term"
     focus: true
-    session: QMLTermSession{
-        id: mainsession
+
+    session: QMLTermSession {
         initialWorkingDirectory: "$HOME"
-        onFinished: terminal.close()
-    }
-    
-    function sendText(text) {
-        mainsession.sendText(text);
+        onFinished: Qt.quit()
     }
 
-    function close() {
-        Qt.quit()
-    }
-
-    onTerminalUsesMouseChanged: console.log(terminalUsesMouse);
-    onTerminalSizeChanged: console.log(terminalSize);
-    Component.onCompleted: {
-        mainsession.startShellProgram();
-        terminal.forceActiveFocus();
-        Qt.inputMethod.show();
-    }
+    Component.onCompleted: session.startShellProgram()
 
     TerminalInputArea {
-        id: inputArea
-        //enabled: terminalPage.state != "SELECTION"
         anchors.fill: parent
-        // FIXME: should anchor to the bottom of the window to cater for the case when the OSK is up
 
-        // This is the minimum wheel event registered by the plugin (with the current settings).
-        property real wheelValue: 40
-
-        // This is needed to fake a "flickable" scrolling.
+        // A swipe step of one text line feels like dragging the text
         swipeDelta: terminal.fontMetrics.height
 
-        // Touch actions
-        onTouchPress: {
-            terminal.forceActiveFocus(0);
+        onTouchPress: terminal.forceActiveFocus()
+        onTouchClick: (x, y) => {
+            // A full click, so programs that take the mouse (mc, htop) see one,
+            // and otherwise to clear any selection
             terminal.simulateMousePress(x, y, Qt.LeftButton, Qt.LeftButton, Qt.NoModifier);
+            terminal.simulateMouseRelease(x, y, Qt.LeftButton, Qt.NoButton, Qt.NoModifier);
+            Qt.inputMethod.show();
         }
-        onTouchClick: {
-            terminal.forceActiveFocus(0);
-            if(!Qt.inputMethod.visible) Qt.inputMethod.show();
-        //    terminal.simulateKeyPress(Qt.Key_Tab, Qt.NoModifier, true, 0, "");
-        }
-        onTouchPressAndHold: alternateAction(x, y);
+        onTouchPressAndHold: (x, y) => editMenu.popup(x, y)
 
-        // Swipe actions
-        onSwipeYDetected: {
-            if (steps > 0) {
-                simulateSwipeDown(steps);
-            } else {
-                simulateSwipeUp(-steps);
-            }
-        }
-        onSwipeXDetected: {
-            if (steps > 0) {
-                simulateSwipeRight(steps);
-            } else {
-                simulateSwipeLeft(-steps);
-            }
-        }
-        onTwoFingerSwipeYDetected: {
-            if (steps > 0) {
-                simulateDualSwipeDown(steps);
-            } else {
-                simulateDualSwipeUp(-steps);
-            }
+        // One finger walks the cursor and the shell history, two scroll back
+        onSwipeYDetected: (steps) => terminal.pressKeyRepeatedly(steps > 0 ? Qt.Key_Down : Qt.Key_Up,
+                                                                 Math.abs(steps))
+        onSwipeXDetected: (steps) => terminal.pressKeyRepeatedly(steps > 0 ? Qt.Key_Right : Qt.Key_Left,
+                                                                 Math.abs(steps))
+        onTwoFingerSwipeYDetected: (steps) => terminal.scrollHistory(steps)
+    }
+
+    ScrollBar {
+        id: historyBar
+
+        readonly property int totalLines: terminal.lines + terminal.scrollbarMaximum - terminal.scrollbarMinimum
+
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+        orientation: Qt.Vertical
+        interactive: false
+        size: totalLines > 0 ? terminal.lines / totalLines : 1
+        position: totalLines > 0 ? (terminal.scrollbarCurrentValue - terminal.scrollbarMinimum) / totalLines : 0
+        active: hideTimer.running
+
+        Timer {
+            id: hideTimer
+
+            interval: 1000
         }
 
-        function simulateSwipeUp(steps) {
-            while(steps > 0) {
-                terminal.simulateKeyPress(Qt.Key_Up, Qt.NoModifier, true, 0, "");
-                steps--;
-            }
-        }
-        function simulateSwipeDown(steps) {
-            while(steps > 0) {
-                terminal.simulateKeyPress(Qt.Key_Down, Qt.NoModifier, true, 0, "");
-                steps--;
-            }
-        }
-        function simulateSwipeLeft(steps) {
-            while(steps > 0) {
-                terminal.simulateKeyPress(Qt.Key_Left, Qt.NoModifier, true, 0, "");
-                steps--;
-            }
-        }
-        function simulateSwipeRight(steps) {
-            while(steps > 0) {
-                terminal.simulateKeyPress(Qt.Key_Right, Qt.NoModifier, true, 0, "");
-                steps--;
-            }
-        }
-        function simulateDualSwipeUp(steps) {
-            while(steps > 0) {
-                terminal.simulateWheel(width * 0.5, height * 0.5, Qt.NoButton, Qt.NoModifier, Qt.point(0, -wheelValue));
-                steps--;
-            }
-        }
-        function simulateDualSwipeDown(steps) {
-            while(steps > 0) {
-                terminal.simulateWheel(width * 0.5, height * 0.5, Qt.NoButton, Qt.NoModifier, Qt.point(0, wheelValue));
-                steps--;
+        Connections {
+            target: terminal
+
+            function onScrollbarParamsChanged() {
+                hideTimer.restart();
             }
         }
     }
 
-    QMLTermScrollbar {
-        terminal: terminal
-        anchors.right: terminal.right
-        width: Units.gu(4)
+    Menu {
+        id: editMenu
 
-        Rectangle {
-            color: "lightblue"
-            opacity: 0.4
-            anchors.margins: Units.gu(0.5)
-            radius: width * 0.5
-            anchors.fill: parent
+        focus: false
+
+        MenuItem {
+            text: "Copy"
+            onTriggered: terminal.copyClipboard()
+        }
+
+        MenuItem {
+            text: "Paste"
+            onTriggered: terminal.pasteClipboard()
         }
     }
 }

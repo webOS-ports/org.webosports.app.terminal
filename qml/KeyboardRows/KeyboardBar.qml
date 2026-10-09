@@ -15,71 +15,135 @@
  *
  * Authored-by: Filippo Scognamiglio <flscogna@gmail.com>
  */
-import QtQuick 2.12
-import QtQuick.Controls 2.4
-import QtQml.Models 2.1
 
-import LuneOS.Components 1.0
+pragma ComponentBehavior: Bound
+
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.LuneOS
+
 import LunaNext.Common 0.1
 
-Rectangle {
-    id: rootItem
+import "Layouts.js" as Layouts
 
-    property int selectedLayoutIndex: 0
-    property real spacing: 0
+/*
+ * The row of keys a virtual keyboard lacks (Ctrl, Esc, arrows, function keys)
+ * and some ready-made commands, one layout at a time.
+ */
+ToolBar {
+    id: keyboardBar
 
-    color: "black"
+    property int layoutIndex: 0
+    readonly property var layout: Layouts.layouts[layoutIndex]
 
-    signal simulateCommand(string command);
-    signal simulateSequence(var sequence, string text);
+    // modifiers is a Qt.KeyboardModifiers value
+    signal keyRequested(int key, int modifiers)
+    signal textRequested(string text)
 
-    JsonListModel {
-        id: layoutsList
-        filePath: Qt.resolvedUrl("Layouts/Layouts.json")
+    /*
+     * Turns "Ctrl+Shift+X" into a Qt key code and modifiers, or null when
+     * the combination names a key Qt does not have.
+     */
+    function parseKey(combination) {
+        const modifierFlags = { "Ctrl": Qt.ControlModifier, "Shift": Qt.ShiftModifier,
+                                "Alt": Qt.AltModifier, "Meta": Qt.MetaModifier };
+        const parts = combination.split("+");
+        const key = Qt["Key_" + parts.pop()];
+        let modifiers = Qt.NoModifier;
 
-        onCountChanged: {
-            if(count>0 && !keybordLayoutModel.filePath) {
-                keybordLayoutModel.filePath = Qt.resolvedUrl("Layouts/"+layoutsList.get(0).file);
-            }
+        if (key === undefined)
+            return null;
+
+        for (const part of parts) {
+            if (!Object.prototype.hasOwnProperty.call(modifierFlags, part))
+                return null;
+            modifiers |= modifierFlags[part];
         }
+
+        return { "key": key, "modifiers": modifiers };
     }
 
-    KeyboardRow {
-        id: keyboardContainer
-        anchors.left: keyboardSelector.right
-        anchors.leftMargin: keyboardContainer.spacing
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+    function trigger(action) {
+        if (action.text !== undefined) {
+            textRequested(action.text);
+            return;
+        }
+
+        const parsed = parseKey(action.key);
+        if (parsed)
+            keyRequested(parsed.key, parsed.modifiers);
+        else
+            console.warn("Terminal: no such key combination: " + action.key);
+    }
+
+    padding: 0
+
+    Button {
+        id: layoutSelector
+
+        anchors.left: parent.left
         anchors.top: parent.top
+        anchors.bottom: parent.bottom
 
-        spacing: rootItem.spacing
+        text: keyboardBar.layout.name
+        focusPolicy: Qt.NoFocus
+        implicitWidth: Math.max(Units.gu(7), contentItem.implicitWidth + leftPadding + rightPadding)
+        LuneOSButton.mainColor: LuneOSButton.blueColor
 
-        layoutModel: JsonListModel {
-            id: keybordLayoutModel
-        }
+        onClicked: layoutMenu.open()
 
-        onSimulateCommand: (command) => { rootItem.simulateCommand(command); }
-        onSimulateSequence: (sequence, text) => { rootItem.simulateSequence(sequence, text); }
-    }
+        Menu {
+            id: layoutMenu
 
-    ExpandableKeyboardButton {
-        id: keyboardSelector
-        height: parent.height
-        width: Units.gu(5)
+            y: -implicitHeight
+            focus: false
 
-        actionsModel: layoutsList
-        actionsDelegate: Action {
-            property string filePath: model.file
-            enabled: false
-            text: model.text
-            onTriggered: {
-                console.log("Loading layout Layouts/" + filePath + "...");
-                keybordLayoutModel.filePath = Qt.resolvedUrl("Layouts/"+filePath);
+            // Exclusive, so the tick only ever moves to another layout
+            ButtonGroup {
+                id: layoutGroup
+            }
+
+            Instantiator {
+                model: Layouts.layouts.length
+                delegate: MenuItem {
+                    required property int index
+
+                    text: Layouts.layouts[index].name
+                    checkable: true
+                    checked: index === keyboardBar.layoutIndex
+                    ButtonGroup.group: layoutGroup
+                    onTriggered: keyboardBar.layoutIndex = index
+                }
+                onObjectAdded: (index, object) => layoutMenu.insertItem(index, object)
+                // takeItem, not removeItem: see KeyboardKey.qml
+                onObjectRemoved: (index, object) => layoutMenu.takeItem(index)
             }
         }
+    }
 
-        enabled: layoutsList.count != 0
+    ListView {
+        id: keysView
 
-        iconSource: Qt.resolvedUrl("../images/drawer.png")
+        anchors.left: layoutSelector.right
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+
+        orientation: ListView.Horizontal
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+
+        model: keyboardBar.layout.keys
+        delegate: KeyboardKey {
+            required property var modelData
+
+            height: keysView.height
+            keyData: modelData
+            onActivated: (action) => keyboardBar.trigger(action)
+        }
+
+        ScrollBar.horizontal: ScrollBar {
+            interactive: false
+        }
     }
 }

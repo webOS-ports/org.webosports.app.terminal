@@ -15,174 +15,171 @@
  *
  * Authored-by: Filippo Scognamiglio <flscogna@gmail.com>
  */
-import QtQuick 2.14
 
-Item{
-    property bool touchAreaPressed: false
-    property real swipeDelta: units.gu(1)
+import QtQuick
 
-    // Touch signals
-    signal touchPressAndHold(int x, int y);
-    signal touchClick(int x, int y);
-    signal touchPress(int x, int y);
-    signal touchRelease(int x, int y);
+import LunaNext.Common 0.1
 
-    signal swipeYDetected(int steps);
-    signal swipeXDetected(int steps);
-    signal twoFingerSwipeYDetected(int steps);
-    signal twoFingerSwipeXDetected(int steps);
+/*
+ * Turns touches on the terminal into taps, press-and-holds and swipes.
+ * Mouse events pass through to the terminal underneath, which handles
+ * selecting text itself.
+ */
+Item {
+    id: inputArea
 
-    // Semantic signals
-    signal alternateAction(int x, int y);
+    // Distance a finger travels for one swipe step
+    property real swipeDelta: Units.gu(1)
 
-    function avg(p1, p2) {
-        return Qt.point((p1.x + p2.x) * 0.5, (p1.y + p2.y) * 0.5);
+    signal touchPress(real x, real y)
+    signal touchClick(real x, real y)
+    signal touchPressAndHold(real x, real y)
+
+    signal swipeYDetected(int steps)
+    signal swipeXDetected(int steps)
+    signal twoFingerSwipeYDetected(int steps)
+
+    function average(p1, p2) {
+        return Qt.point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
     }
 
     function distance(p1, p2) {
         return Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
     }
 
-    function absFloor(val) {
-        return val > 0 ? Math.floor(val) : Math.ceil(val);
+    // Rounds towards zero, so a drag counts the same steps either way
+    function truncate(value) {
+        return value > 0 ? Math.floor(value) : Math.ceil(value);
     }
 
     MultiPointTouchArea {
-        property bool __moved: false
-        property bool __multiTouch: false // Decide whether this is a single or multi touch gesture before handling it. Otherwise, we run into problems while switching between the two modes.
-        property point __pressPosition: Qt.point(0, 0);
-        property real __prevDragStepsY: 0
-        property real __prevDragStepsX: 0
+        id: singleTouchArea
 
-        // This enum represent the status of the dragging.
-        // It is used to avoid simultaneously dragging along both axies
-        // as it's very error prone.
-
+        // A drag only ever follows one axis; following both at once
+        // misfires too easily
         readonly property int noDragging: 0
         readonly property int yDragging: 1
         readonly property int xDragging: 2
-        property real __dragging: noDragging
 
-        id: singleTouchTouchArea
+        property int dragging: noDragging
+        property bool moved: false
+        // Whether this gesture turned out to be a two-finger one. Decided
+        // before it is handled, as switching between the two halfway goes wrong.
+        property bool multiTouch: false
+        property point pressPosition: Qt.point(0, 0)
+        property int prevDragStepsX: 0
+        property int prevDragStepsY: 0
 
         anchors.fill: parent
-        z: parent.z + 0.01
+        maximumTouchPoints: 1
+        mouseEnabled: false
 
-        // TODO Interval should be the same used by all system applications.
         Timer {
             id: pressAndHoldTimer
-            running: false
+
+            interval: Qt.styleHints.mousePressAndHoldInterval
             onTriggered: {
-                if (!singleTouchTouchArea.__moved)
-                    touchPressAndHold(singleTouchTouchArea.__pressPosition.x,
-                                      singleTouchTouchArea.__pressPosition.y);
+                if (!singleTouchArea.moved)
+                    inputArea.touchPressAndHold(singleTouchArea.pressPosition.x,
+                                                singleTouchArea.pressPosition.y);
             }
         }
 
+        // While this runs a second finger still makes it a two-finger swipe
         Timer {
             id: multiTouchTimer
-            running: false
+
             interval: 200
         }
 
-        maximumTouchPoints: 1
-        onPressed: {
-            touchAreaPressed = true;
-            __moved = false;
-            __multiTouch = false;
-            __prevDragStepsY = 0.0;
-            __prevDragStepsX = 0.0;
-            __dragging = noDragging;
-            __pressPosition = Qt.point(touchPoints[0].x, touchPoints[0].y);
+        onPressed: (touchPoints) => {
+            const point = touchPoints[0];
+
+            moved = false;
+            multiTouch = false;
+            prevDragStepsX = 0;
+            prevDragStepsY = 0;
+            dragging = noDragging;
+            pressPosition = Qt.point(point.x, point.y);
             pressAndHoldTimer.start();
-            multiTouchTimer.start(); // Detect if this is going to be a multi touch swipe while the timer is running
+            multiTouchTimer.start();
 
-            touchPress(touchPoints[0].x, touchPoints[0].y);
+            inputArea.touchPress(point.x, point.y);
         }
-        onUpdated: {
-            if (__multiTouch || multiTouchTimer.running) // Do not handle multi touch events here and detect multi touch swipes while the timer is running
+
+        onUpdated: (touchPoints) => {
+            if (multiTouch || multiTouchTimer.running || touchPoints.length === 0)
                 return;
 
-            var dragValueY = touchPoints[0].y - __pressPosition.y;
-            var dragValueX = touchPoints[0].x - __pressPosition.x;
-            var dragStepsY = dragValueY / swipeDelta;
-            var dragStepsX = dragValueX / swipeDelta;
+            const point = touchPoints[0];
+            const dragX = point.x - pressPosition.x;
+            const dragY = point.y - pressPosition.y;
+            const stepsX = inputArea.truncate(dragX / inputArea.swipeDelta);
+            const stepsY = inputArea.truncate(dragY / inputArea.swipeDelta);
 
-            var dragStepsFloorY = absFloor(dragStepsY);
-            var dragStepsFloorX = absFloor(dragStepsX);
-
-            if (!__moved && distance(touchPoints[0], __pressPosition) > swipeDelta) {
-                __moved = true;
-                __dragging = (Math.abs(dragValueY) >= Math.abs(dragValueX)) ? yDragging : xDragging;
-            } else if (!__moved) {
-                return;
+            if (!moved) {
+                if (inputArea.distance(point, pressPosition) <= inputArea.swipeDelta)
+                    return;
+                moved = true;
+                dragging = Math.abs(dragY) >= Math.abs(dragX) ? yDragging : xDragging;
             }
 
-            if (__dragging === yDragging && dragStepsFloorY !== __prevDragStepsY) {
-                swipeYDetected(dragStepsFloorY - __prevDragStepsY);
-            } else if (__dragging === xDragging && dragStepsFloorX !== __prevDragStepsX) {
-                swipeXDetected(dragStepsFloorX - __prevDragStepsX);
-            }
+            if (dragging === yDragging && stepsY !== prevDragStepsY)
+                inputArea.swipeYDetected(stepsY - prevDragStepsY);
+            else if (dragging === xDragging && stepsX !== prevDragStepsX)
+                inputArea.swipeXDetected(stepsX - prevDragStepsX);
 
-            __prevDragStepsY = dragStepsFloorY;
-            __prevDragStepsX = dragStepsFloorX;
+            prevDragStepsX = stepsX;
+            prevDragStepsY = stepsY;
         }
-        onReleased: {
-            var timerRunning = pressAndHoldTimer.running;
+
+        onReleased: (touchPoints) => {
+            const holdPending = pressAndHoldTimer.running;
+
             pressAndHoldTimer.stop();
-            touchAreaPressed = false;
+            if (touchPoints.length === 0)
+                return;
 
-            if (!__moved && timerRunning) {
-                touchClick(touchPoints[0].x, touchPoints[0].y);
-            }
-
-            touchRelease(touchPoints[0].x, touchPoints[0].y);
+            if (!moved && holdPending)
+                inputArea.touchClick(touchPoints[0].x, touchPoints[0].y);
         }
 
         MultiPointTouchArea {
-            property point __pressPosition: Qt.point(0, 0);
-            property real __prevDragSteps: 0
+            id: doubleTouchArea
 
-            id: doubleTouchTouchArea
+            property point pressPosition: Qt.point(0, 0)
+            property int prevDragSteps: 0
+
             anchors.fill: parent
-            z: parent.z + 0.001
-
-            maximumTouchPoints: 2
             minimumTouchPoints: 2
-            onPressed: {
-                if (!multiTouchTimer.running) // Already recognized as single touch swipe
-                    return;
-
-                __pressPosition = avg(touchPoints[0], touchPoints[1]);
-                __prevDragSteps = 0;
-
-                singleTouchTouchArea.__moved = true;
-                singleTouchTouchArea.__multiTouch = true;
-            }
-            onUpdated: {
-                // WORKAROUND: filter bad events that somehow get here during release.
-                if (touchPoints.length !== 2)
-                    return;
-
-                if (!singleTouchTouchArea.__multiTouch)
-                    return;
-
-                var touchPoint = avg(touchPoints[0], touchPoints[1]);
-                var dragValue = touchPoint.y - __pressPosition.y;
-                var dragSteps = dragValue / swipeDelta;
-
-                var dragStepsFloorY = absFloor(dragSteps);
-
-                if (dragStepsFloorY !== __prevDragSteps) {
-                    twoFingerSwipeYDetected(dragStepsFloorY - __prevDragSteps);
-                }
-
-                __prevDragSteps = dragStepsFloorY;
-            }
-
+            maximumTouchPoints: 2
             mouseEnabled: false
-        }
 
-        mouseEnabled: false
+            onPressed: (touchPoints) => {
+                // Too late: already taken as a one-finger swipe
+                if (!multiTouchTimer.running)
+                    return;
+
+                pressPosition = inputArea.average(touchPoints[0], touchPoints[1]);
+                prevDragSteps = 0;
+
+                singleTouchArea.moved = true;
+                singleTouchArea.multiTouch = true;
+            }
+
+            onUpdated: (touchPoints) => {
+                // Releasing a finger can deliver an update with only one point
+                if (touchPoints.length !== 2 || !singleTouchArea.multiTouch)
+                    return;
+
+                const center = inputArea.average(touchPoints[0], touchPoints[1]);
+                const steps = inputArea.truncate((center.y - pressPosition.y) / inputArea.swipeDelta);
+
+                if (steps !== prevDragSteps)
+                    inputArea.twoFingerSwipeYDetected(steps - prevDragSteps);
+
+                prevDragSteps = steps;
+            }
+        }
     }
 }

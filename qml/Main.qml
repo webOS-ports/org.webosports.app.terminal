@@ -1,59 +1,63 @@
-import QtQuick 2.12
-
-import QtQuick.Layouts 1.3
-import QtQuick.Controls 2.4
-
-import LuneOS.Components 1.0
-import LunaNext.Common 0.1
+import QtQuick
+import QtQuick.Layouts
 
 import Eos.Window 0.1
+import LunaNext.Common 0.1
 
-import QMLTermWidget 1.0
 import "KeyboardRows" as Keyboard
 
 WebOSWindow {
-    id: root
+    id: appWindow
+
+    // The card is not resized for the virtual keyboard, so make room for it
+    readonly property real keyboardHeight: Qt.inputMethod.visible ? Qt.inputMethod.keyboardRectangle.height : 0
 
     width: Settings.displayWidth
     height: Settings.displayHeight
     visible: true
+    windowType: "_WEBOS_WINDOW_TYPE_CARD"
+    title: "Terminal"
+    color: "black"
 
-    Action {
-        onTriggered: terminal.copyClipboard();
-        shortcut: "Ctrl+Shift+C"
+    Shortcut {
+        sequence: "Ctrl+Shift+C"
+        onActivated: terminal.copyClipboard()
     }
 
-    Action {
-        onTriggered: terminal.pasteClipboard();
-        shortcut: "Ctrl+Shift+V"
+    Shortcut {
+        sequence: "Ctrl+Shift+V"
+        onActivated: terminal.pasteClipboard()
     }
 
-    Column {
-        width: parent.width
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.bottomMargin: appWindow.keyboardHeight
         spacing: 0
 
         Terminal {
             id: terminal
-            width: parent.width
-            height: root.height - keyboardBarLoader.height - keyboardHeight
 
-            property real keyboardHeight: Qt.inputMethod.visible ? Qt.inputMethod.keyboardRectangle.height : 0
+            Layout.fillWidth: true
+            Layout.fillHeight: true
         }
 
-        Loader {
-            id: keyboardBarLoader
-            width: parent.width
-            active: true //Qt.inputMethod.visible
-            height: Units.gu(5)
+        Keyboard.KeyboardBar {
+            Layout.fillWidth: true
+            Layout.preferredHeight: Units.gu(5)
 
-            sourceComponent: Keyboard.KeyboardBar {
-                onSimulateSequence: terminal.simulateKeySequence(sequence);
-                onSimulateCommand: terminal.sendText(command);
+            onKeyRequested: (key, modifiers) => {
+                terminal.pressKey(key, modifiers);
+                terminal.forceActiveFocus();
+            }
+            onTextRequested: (text) => {
+                terminal.sendText(text);
+                terminal.forceActiveFocus();
             }
         }
     }
 
     Component.onCompleted: {
         terminal.forceActiveFocus();
+        Qt.inputMethod.show();
     }
 }
