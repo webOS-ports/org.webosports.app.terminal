@@ -15,9 +15,12 @@ WebOSWindow {
     // the shell's area below it - on the Q25 the bar ended up 64 px above the
     // keys. The rectangle arrives in the coordinates of the keyboard's surface,
     // which on LuneOS starts where the card does, under the status bar.
+    // Only a rectangle that reaches the bottom of the window is taken for a
+    // keyboard: an input method has been seen to report a sliver at the top
+    // of its panel while showing nothing.
     readonly property real keyboardHeight: {
         const rect = Qt.inputMethod.keyboardRectangle;
-        if (!Qt.inputMethod.visible || rect.height <= 0)
+        if (!Qt.inputMethod.visible || rect.height <= 0 || rect.y + rect.height < height)
             return 0;
         return Math.max(0, Math.min(height, height - rect.y));
     }
