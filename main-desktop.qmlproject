@@ -3,18 +3,19 @@
 import QmlProject 1.1
 
 Project {
-    mainFile: "desktop/main-desktop.qml"
+    mainFile: "qml/Main.qml"
 
     /* Include .qml, .js, and image files from current directory and subdirectories */
     QmlFiles {
-        directory: "."
+        directory: "qml"
     }
     JavaScriptFiles {
-        directory: "."
+        directory: "qml"
     }
     ImageFiles {
         directory: "."
     }
-    /* List of plugin directories passed to QML runtime */
-    importPaths: [ "desktop", "../qmltermwidget", "../luneos-components/modules", "../luneos-components/test/imports" ]
+    /* List of plugin directories passed to QML runtime: a QMLTermWidget 2.0
+       build, the LuneOS style and the luneos-components desktop stubs */
+    importPaths: [ "../qmltermwidget", "../luneos-components/modules", "../luneos-components/test/imports" ]
 }

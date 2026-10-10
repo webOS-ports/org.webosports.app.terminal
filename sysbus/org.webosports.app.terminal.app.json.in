@@ -1,0 +1,12 @@
+{
+    "exeName": "@APP_DIR@/luneos-terminal",
+    "type": "regular",
+    "allowedNames": ["org.webosports.app.terminal-*"],
+    "permissions": [
+        {
+            "service": "org.webosports.app.terminal-*",
+            "outbound": ["com.webos.applicationManager"]
+        }
+    ],
+    "trustLevel": "oem"
+}
