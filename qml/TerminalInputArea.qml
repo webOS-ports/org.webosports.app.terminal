@@ -22,8 +22,9 @@ import LunaNext.Common 0.1
 
 /*
  * Turns touches on the terminal into taps, press-and-holds and swipes.
- * Mouse events pass through to the terminal underneath, which handles
- * selecting text itself.
+ * After a press-and-hold the finger is followed until it lets go, rather
+ * than swiping, so it can select. Mouse events pass through to the terminal
+ * underneath, which handles selecting text itself.
  */
 Item {
     id: inputArea
@@ -34,6 +35,8 @@ Item {
     signal touchPress(real x, real y)
     signal touchClick(real x, real y)
     signal touchPressAndHold(real x, real y)
+    signal touchHoldMoved(real x, real y)
+    signal touchHoldReleased(real x, real y)
 
     signal swipeYDetected(int steps)
     signal swipeXDetected(int steps)
@@ -63,6 +66,8 @@ Item {
 
         property int dragging: noDragging
         property bool moved: false
+        // Pressed and held: following the finger until it lets go
+        property bool holding: false
         // Whether this gesture turned out to be a two-finger one. Decided
         // before it is handled, as switching between the two halfway goes wrong.
         property bool multiTouch: false
@@ -79,9 +84,11 @@ Item {
 
             interval: Qt.styleHints.mousePressAndHoldInterval
             onTriggered: {
-                if (!singleTouchArea.moved)
-                    inputArea.touchPressAndHold(singleTouchArea.pressPosition.x,
-                                                singleTouchArea.pressPosition.y);
+                if (singleTouchArea.moved)
+                    return;
+                singleTouchArea.holding = true;
+                inputArea.touchPressAndHold(singleTouchArea.pressPosition.x,
+                                            singleTouchArea.pressPosition.y);
             }
         }
 
@@ -96,6 +103,7 @@ Item {
             const point = touchPoints[0];
 
             moved = false;
+            holding = false;
             multiTouch = false;
             prevDragStepsX = 0;
             prevDragStepsY = 0;
@@ -112,6 +120,10 @@ Item {
                 return;
 
             const point = touchPoints[0];
+            if (holding) {
+                inputArea.touchHoldMoved(point.x, point.y);
+                return;
+            }
             const dragX = point.x - pressPosition.x;
             const dragY = point.y - pressPosition.y;
             const stepsX = inputArea.truncate(dragX / inputArea.swipeDelta);
@@ -140,8 +152,17 @@ Item {
             if (touchPoints.length === 0)
                 return;
 
-            if (!moved && holdPending)
+            if (holding) {
+                holding = false;
+                inputArea.touchHoldReleased(touchPoints[0].x, touchPoints[0].y);
+            } else if (!moved && holdPending) {
                 inputArea.touchClick(touchPoints[0].x, touchPoints[0].y);
+            }
+        }
+
+        onCanceled: {
+            pressAndHoldTimer.stop();
+            holding = false;
         }
 
         MultiPointTouchArea {

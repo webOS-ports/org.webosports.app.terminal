@@ -12,6 +12,9 @@ QMLTermWidget {
     // which scrolls the history by a line
     readonly property int wheelStep: 40
 
+    // Whether there is a selection to copy
+    property bool canCopy: false
+
     function sendText(text) {
         session.sendText(text);
     }
@@ -44,6 +47,7 @@ QMLTermWidget {
     }
 
     Component.onCompleted: session.startShellProgram()
+    onCopyAvailable: (available) => canCopy = available
 
     TerminalInputArea {
         anchors.fill: parent
@@ -59,7 +63,18 @@ QMLTermWidget {
             terminal.simulateMouseRelease(x, y, Qt.LeftButton, Qt.NoButton, Qt.NoModifier);
             Qt.inputMethod.show();
         }
-        onTouchPressAndHold: (x, y) => editMenu.popup(x, y)
+        // Press and hold selects the word under the finger, dragging on
+        // extends the selection word by word, and letting go offers the edit
+        // menu. With Shift, as the terminal then selects even while a
+        // program (mc, htop) takes the mouse.
+        onTouchPressAndHold: (x, y) => terminal.simulateMouseDoubleClick(x, y, Qt.LeftButton, Qt.LeftButton,
+                                                                         Qt.ShiftModifier)
+        onTouchHoldMoved: (x, y) => terminal.simulateMouseMove(x, y, Qt.NoButton, Qt.LeftButton,
+                                                               Qt.ShiftModifier)
+        onTouchHoldReleased: (x, y) => {
+            terminal.simulateMouseRelease(x, y, Qt.LeftButton, Qt.NoButton, Qt.ShiftModifier);
+            editMenu.popup(x, y);
+        }
 
         // One finger walks the cursor and the shell history, two scroll back
         onSwipeYDetected: (steps) => terminal.pressKeyRepeatedly(steps > 0 ? Qt.Key_Down : Qt.Key_Up,
@@ -99,6 +114,9 @@ QMLTermWidget {
         }
     }
 
+    // Neither the menu nor its items take the focus: the terminal losing it
+    // hides the keyboard, and the terminal growing into its place clears
+    // the selection before Copy can copy it
     Menu {
         id: editMenu
 
@@ -106,12 +124,27 @@ QMLTermWidget {
 
         MenuItem {
             text: "Copy"
+            focusPolicy: Qt.NoFocus
+            enabled: terminal.canCopy
             onTriggered: terminal.copyClipboard()
         }
 
         MenuItem {
             text: "Paste"
+            focusPolicy: Qt.NoFocus
             onTriggered: terminal.pasteClipboard()
+        }
+
+        MenuItem {
+            text: "Select All"
+            focusPolicy: Qt.NoFocus
+            onTriggered: {
+                terminal.selectAll();
+                // Back with Copy on offer, as holding again would start a new
+                // selection; once this menu has finished closing
+                const position = Qt.point(editMenu.x, editMenu.y);
+                Qt.callLater(() => editMenu.popup(position.x, position.y));
+            }
         }
     }
 }
