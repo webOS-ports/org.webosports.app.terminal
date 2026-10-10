@@ -3,6 +3,7 @@ import QtQuick.Layouts
 
 import Eos.Window 0.1
 import LunaNext.Common 0.1
+import LuneOS.Service 1.0
 
 import "KeyboardRows" as Keyboard
 
@@ -30,6 +31,9 @@ WebOSWindow {
     // the corner of the first row. Keep the text clear of the arc: its
     // deepest point along the diagonal, 20 * (1 - 1/sqrt(2)), is 6 px in.
     readonly property int cornerClearance: Math.ceil(20 * (1 - Math.SQRT1_2))
+
+    // Set by main.cpp from LS2_NAME
+    property string ls2Name
 
     width: Settings.displayWidth
     height: Settings.displayHeight
@@ -78,8 +82,30 @@ WebOSWindow {
         }
     }
 
-    Component.onCompleted: {
+    function focusTerminal() {
         terminal.forceActiveFocus();
         Qt.inputMethod.show();
     }
+
+    // The app manager restarts a native app that has not registered with it
+    // whenever it is launched again, and tapping the app menu is such a
+    // launch: it killed the shell and everything running in it. Registered,
+    // the app is sent the launch as an event instead, and a close too.
+    Loader {
+        active: appWindow.ls2Name !== ""
+        sourceComponent: LunaService {
+            name: appWindow.ls2Name
+
+            Component.onCompleted: subscribe("luna://com.webos.applicationManager/registerApp", "{}",
+                                             (message) => {
+                const event = JSON.parse(message.payload).event;
+                if (event === "relaunch")
+                    appWindow.focusTerminal();
+                else if (event === "close")
+                    Qt.quit();
+            }, (message) => console.warn("Could not register with the app manager:", message.payload))
+        }
+    }
+
+    Component.onCompleted: focusTerminal()
 }

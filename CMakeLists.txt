@@ -34,3 +34,14 @@ set(APP_DIR ${WEBOS_INSTALL_WEBOS_APPLICATIONSDIR}/org.webosports.app.terminal)
 install(TARGETS luneos-terminal DESTINATION ${APP_DIR})
 install(FILES appinfo.json icon.png DESTINATION ${APP_DIR})
 install(DIRECTORY qml DESTINATION ${APP_DIR})
+
+# luna-service2: the bus name the app manager gives each instance, from which
+# the app registers with it (see Main.qml)
+configure_file(sysbus/org.webosports.app.terminal.app.json.in
+               ${CMAKE_BINARY_DIR}/org.webosports.app.terminal.app.json @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/org.webosports.app.terminal.app.json
+        DESTINATION share/luna-service2/roles.d)
+install(FILES sysbus/org.webosports.app.terminal.manifest.json
+        DESTINATION share/luna-service2/manifests.d)
+install(FILES sysbus/org.webosports.app.terminal.perm.json
+        DESTINATION share/luna-service2/client-permissions.d)

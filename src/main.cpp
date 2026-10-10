@@ -17,6 +17,11 @@ int main(int argc, char **argv)
 
     // The engine owns the window it creates and deletes it before itself.
     QQmlApplicationEngine engine;
+    // The bus name the app manager gave this instance, under which Main.qml
+    // registers with it; empty when not started by the app manager.
+    engine.setInitialProperties({
+        { QStringLiteral("ls2Name"), qEnvironmentVariable("LS2_NAME") },
+    });
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
                      &app, []() { QCoreApplication::exit(1); },
                      Qt::QueuedConnection);
