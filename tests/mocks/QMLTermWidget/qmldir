@@ -1,0 +1,3 @@
+module QMLTermWidget
+QMLTermWidget 2.0 QMLTermWidget.qml
+QMLTermSession 2.0 QMLTermSession.qml

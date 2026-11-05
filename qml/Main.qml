@@ -59,6 +59,7 @@ WebOSWindow {
 
         Terminal {
             id: terminal
+            objectName: "terminal"
 
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -68,6 +69,7 @@ WebOSWindow {
         }
 
         Keyboard.KeyboardBar {
+            objectName: "keyboardBar"
             Layout.fillWidth: true
             Layout.preferredHeight: Units.gu(5)
 

@@ -69,6 +69,7 @@ Button {
 
     Menu {
         id: alternativesMenu
+        objectName: "alternativesMenu"
 
         y: -implicitHeight
         // Leave the keyboard focus with the terminal
