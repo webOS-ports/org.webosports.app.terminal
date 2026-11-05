@@ -119,6 +119,7 @@ QMLTermWidget {
     // the selection before Copy can copy it
     Menu {
         id: editMenu
+        objectName: "editMenu"
 
         focus: false
 

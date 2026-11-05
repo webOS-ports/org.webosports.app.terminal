@@ -80,6 +80,7 @@ ToolBar {
 
     Button {
         id: layoutSelector
+        objectName: "layoutSelector"
 
         anchors.left: parent.left
         anchors.top: parent.top
@@ -94,6 +95,7 @@ ToolBar {
 
         Menu {
             id: layoutMenu
+            objectName: "layoutMenu"
 
             y: -implicitHeight
             focus: false
@@ -123,6 +125,7 @@ ToolBar {
 
     ListView {
         id: keysView
+        objectName: "keysView"
 
         anchors.left: layoutSelector.right
         anchors.right: parent.right
